@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String           @id @default(uuid())
+  name        String
+  email       String           @unique
+  avatarColor String           @default("#4A90D9") @map("avatar_color")
+  documents   Document[]
+  shares      DocumentShare[]
+
+  @@map("users")
+}
+
+model Document {
+  id        String           @id @default(uuid())
+  title     String           @default("Untitled")
+  content   String           @default("")
+  ownerId   String           @map("owner_id")
+  owner     User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+  shares    DocumentShare[]
+
+  @@index([ownerId])
+  @@map("documents")
+}
+
+model DocumentShare {
+  id          String   @id @default(uuid())
+  documentId  String   @map("document_id")
+  document    Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  userId      String   @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission  String   @default("edit")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@unique([documentId, userId])
+  @@index([documentId])
+  @@index([userId])
+  @@map("document_shares")
+}

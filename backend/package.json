@@ -1,0 +1,25 @@
+{
+  "name": "ajaia-docs-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "start": "bun run src/index.ts",
+    "db:migrate": "prisma db push",
+    "db:seed": "bun run src/seed.ts",
+    "db:reset": "prisma db push --force-reset && bun run db:seed",
+    "test": "bun test",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@elysiajs/cors": "^1.2.0",
+    "@prisma/client": "^6.0.0",
+    "elysia": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.0",
+    "prisma": "^6.0.0",
+    "typescript": "^5.7.0"
+  }
+}
